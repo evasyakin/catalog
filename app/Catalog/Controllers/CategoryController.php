@@ -11,7 +11,7 @@ class CategoryController extends Controller
     public function list()
     {
         $cats = CategoryService::globalCategories();
-        $this->view('catalog/category.php', compact('cats'));
+        $this->view('catalog/categories.php', compact('cats'));
     }
 
     public function one(string $url)
