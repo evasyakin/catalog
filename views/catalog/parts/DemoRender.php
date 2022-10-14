@@ -8,15 +8,17 @@ class DemoRender
 {
     public $cat;
     // public $cat_ids;
-    public $products;
+    public $products = [];
 
     public $showProducts;
+
+    public $subcat_level;
 
     public function run(Category $cat = null, array $products = [], bool $showProducts = false)
     {
         if (empty($cat) && empty($products)) return 'Empty cat && products';
         if (empty($cat) && !empty($products)) return $this->showProducts($products);
-        $this->cat = &$cat;
+        $this->subcat_level = $cat->subcat_level;
         $this->products = &$products;
         $this->showProducts = $showProducts;
         // $out = '<div class="demo"><div class="demo-cats"><h4>Иерархия категорий</h4>'
@@ -35,10 +37,10 @@ class DemoRender
     public function showCat(Category &$cat, int $level = 0)
     {
         $title = $this->showTitle($cat, $level);
-        if ($level < $this->cat->subcat_level) {
+        if ($level < $this->subcat_level) {
             $subs = $cat->subCategories();
         }
-        if ($level <= $this->cat->subcat_level) {
+        if ($level <= $this->subcat_level) {
             $products = $this->getCatProducts($cat->id);
         }
         if (!empty($subs) || !empty($products)) {
@@ -58,8 +60,9 @@ class DemoRender
         return $out;
     }
 
-    protected function showCats(array &$cats = null, int $level = 0)
+    public function showCats(array &$cats = null, int $level = 0)
     {
+        if (null === $this->subcat_level) $this->subcat_level = 0;
         if (empty($cats)) return '';
         $out = '<div class="categories">';
         foreach ($cats as $cat) {
@@ -101,7 +104,7 @@ class DemoRender
         if ($entity instanceof Category) {
             $type = (isset($entity->virtual) && $entity->virtual == 1) ? 'virtual' : 'category';
             if (null !== $level) {
-                $level = "{$level}/{$this->cat->subcat_level}";
+                $level = "{$level}/{$this->subcat_level}";
                 $level = "<span class=\"level\">{$level} level</span>";
             }
             $href = App::url() . '/catalog/' . $entity->url;
