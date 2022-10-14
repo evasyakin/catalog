@@ -30,10 +30,12 @@ include_once APP_DIR . 'app/core/functions.php';
 //     echo $row['name'] . '<br>';
 // }
 
+// роутинг
 (new Router)
 ->viewsDir('views/')
 ->default('404.php')
-->get('/catalog', [CategoryController::class => 'list'])
+->get('/', [CategoryController::class => 'list'])
+->get('/catalog/', [CategoryController::class => 'list'])
 // ->get('/catalog/(:id)', [CategoryController::class => 'one'])
 ->get('/catalog/(:any)', [CategoryController::class => 'one'])
 // ->get('/catalog/(:id)', function (int $id) { var_dump($id, $this);})
